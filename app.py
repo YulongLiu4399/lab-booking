@@ -1,12 +1,12 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, redirect
 from flask_cors import CORS
 import sqlite3
 import datetime
 
 app = Flask(__name__)
-CORS(app)  # 允许你的前端页面调用
+CORS(app)  # 允许跨域，方便前端调用
 
-# ---------- 初始化数据库 ----------
+# ---------- 数据库初始化 ----------
 def init_db():
     conn = sqlite3.connect('lab.db')
     c = conn.cursor()
@@ -26,7 +26,24 @@ def init_db():
 
 init_db()
 
-# ---------- 1. 提交预约（前端调用的接口） ----------
+# ---------- 首页（根路径） ----------
+@app.route('/')
+def home():
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"><title>大气物理与探测实验室</title></head>
+    <body style="font-family: sans-serif; text-align: center; padding: 50px;">
+        <h1>🌤️ 大气物理与探测实验室 · 101数智实践基地</h1>
+        <p>欢迎访问预约系统！</p>
+        <p><a href="/admin" style="font-size: 1.2rem;">📋 进入后台管理 →</a></p>
+        <hr style="width: 200px; margin: 30px auto;">
+        <p style="color: #666;">如需提交预约，请使用 API 接口（/api/booking）</p>
+    </body>
+    </html>
+    '''
+
+# ---------- 1. 提交预约 ----------
 @app.route('/api/booking', methods=['POST'])
 def submit_booking():
     data = request.get_json()
@@ -48,7 +65,7 @@ def submit_booking():
     conn.close()
     return jsonify({'message': '预约成功！'}), 200
 
-# ---------- 2. 获取所有预约（后台管理用） ----------
+# ---------- 2. 获取所有预约 ----------
 @app.route('/api/bookings', methods=['GET'])
 def get_bookings():
     conn = sqlite3.connect('lab.db')
@@ -57,7 +74,6 @@ def get_bookings():
     rows = c.fetchall()
     conn.close()
     
-    # 把数据转成字典列表
     bookings = []
     for row in rows:
         bookings.append({
@@ -71,7 +87,7 @@ def get_bookings():
         })
     return jsonify(bookings)
 
-# ---------- 3. 后台管理页面（直接浏览器打开看效果） ----------
+# ---------- 3. 后台管理页面 ----------
 @app.route('/admin')
 def admin_panel():
     html = '''
@@ -92,12 +108,14 @@ def admin_panel():
             button { background: #0a3d62; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; }
             button:hover { background: #1a5a7a; }
             .refresh { margin-bottom: 16px; }
+            .nav-link { margin-top: 20px; }
         </style>
     </head>
     <body>
         <h1>📋 实验室预约管理</h1>
         <button class="refresh" onclick="loadData()">🔄 刷新列表</button>
         <div id="table-wrap"></div>
+        <div class="nav-link"><a href="/">🏠 返回首页</a></div>
 
         <script>
             async function loadData() {
@@ -129,6 +147,8 @@ def admin_panel():
     '''
     return render_template_string(html)
 
-# ---------- 启动 ----------
+# ---------- 启动（适配 Render） ----------
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # 在 Render 上，端口由环境变量 PORT 指定，默认 10000
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
