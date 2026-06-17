@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>101数智实践基地 · 大气物理与探测实验室</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #0a3d62;
+            --primary-light: #1a5a7a;
+            --primary-dark: #062a42;
+            --accent: #f0a04b;
+            --accent-light: #f7c68a;
+            --bg: #f0f6fb;
+            --card-bg: #ffffff;
+            --text: #1e2f3f;
+            --text-light: #4a5f6e;
+            --border: #dce7ef;
+            --shadow: 0 8px 30px rgba(10, 61, 98, 0.08);
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 999;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(220,231,239,0.6);
+            height: 68px;
+            display: flex;
+            align-items: center;
+            transition: box-shadow var(--transition);
+        }
+        .navbar.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary);
+        }
+        .logo i { font-size: 1.4rem; color: var(--accent); }
+        .logo span {
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 6px;
+            align-items: center;
+        }
+        .nav-links a {
+            font-size: 0.9rem;
+            padding: 6px 16px;
+            border-radius: 24px;
+            color: var(--text-light);
+            transition: all var(--transition);
+            font-weight: 500;
+        }
+        .nav-links a:hover {
+            background: rgba(10,61,98,0.07);
+            color: var(--primary);
+        }
+        .nav-links a.cta {
+            background: var(--primary);
+            color: #fff;
+            padding: 6px 20px;
+        }
+        .nav-links a.cta:hover {
+            background: var(--primary-light);
+            color: #fff;
+        }
+
+        /* Hero */
+        .hero {
+            margin-top: 68px;
+            padding: 60px 0 40px;
+            background: linear-gradient(145deg, #ffffff 0%, #f4faff 100%);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -40%; right: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(240,160,75,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            bottom: -30%; left: -5%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(10,61,98,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero .container {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .hero-content h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+        .hero-content h1 .highlight { color: var(--accent); }
+        .hero-content .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+        .hero-content .subhead {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            margin-bottom: 24px;
+            max-width: 480px;
+        }
+        .hero-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 24px;
+            margin-top: 8px;
+        }
+        .hero-info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.92rem;
+            color: var(--text-light);
+        }
+        .hero-info-item i {
+            width: 20px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-visual .illustration {
+            background: rgba(10,61,98,0.04);
+            border-radius: 50%;
+            width: 280px; height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: var(--primary);
+            border: 2px dashed rgba(10,61,98,0.15);
+        }
+
+        /* 教师卡片 */
+        .section-heading {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-heading i { color: var(--accent); font-size: 1.4rem; }
+        .section-heading .line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--border), transparent);
+            margin-left: 8px;
+        }
+        .teacher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        .teacher-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 28px 24px 24px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+        .teacher-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(10,61,98,0.12);
+            border-color: var(--accent-light);
+        }
+        .teacher-card .avatar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 14px;
+        }
+        .teacher-card .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            background: #d9e8f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .teacher-card .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .teacher-card .name-wrap { flex: 1; }
+        .teacher-card .name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            transition: color var(--transition);
+            cursor: pointer;
+        }
+        .teacher-card .name:hover { color: var(--accent); }
+        .teacher-card .name i {
+            font-size: 0.7rem;
+            color: var(--accent);
+            margin-left: 4px;
+            opacity: 0.7;
+        }
+        .teacher-card .title {
+            font-size: 0.82rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .teacher-card .role-tag {
+            display: inline-block;
+            background: rgba(10,61,98,0.06);
+            color: var(--primary);
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+        .teacher-card .bio {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            flex: 1;
+        }
+        .teacher-card .bio strong { color: var(--text); }
+        .teacher-card .detail-list {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin: 4px 0 10px;
+            padding-left: 18px;
+            list-style: none;
+        }
+        .teacher-card .detail-list li {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 2px;
+        }
+        .teacher-card .detail-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .teacher-card .meta-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            margin-top: 4px;
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+        }
+        .teacher-card .meta-links a {
+            font-size: 0.8rem;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color var(--transition);
+        }
+        .teacher-card .meta-links a:hover { color: var(--accent); }
+        .teacher-card .meta-links i { font-size: 0.75rem; width: 16px; }
+
+        /* 页脚 */
+        .footer {
+            background: var(--primary-dark);
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            border-top: 3px solid var(--accent);
+        }
+        .footer a { color: var(--accent-light); }
+        .footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .footer .footer-links a {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            transition: color var(--transition);
+        }
+        .footer .footer-links a:hover { color: #fff; }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero .container { grid-template-columns: 1fr; text-align: center; }
+            .hero-content h1 { font-size: 2rem; }
+            .hero-content .subhead { margin: 0 auto 24px; }
+            .hero-info-grid { grid-template-columns: 1fr; justify-items: center; }
+            .hero-visual .illustration { width: 160px; height: 160px; font-size: 3.6rem; }
+            .section-heading { font-size: 1.3rem; }
+            .teacher-grid { grid-template-columns: 1fr; }
+            .nav-links a:not(.cta) { display: none; }
+            .teacher-card .avatar-wrap { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 16px; }
+            .hero { padding: 32px 0 24px; }
+            .hero-content h1 { font-size: 1.6rem; }
+            .teacher-card { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="#" class="logo">
+                <i class="fas fa-cloud-sun"></i>
+                数智实践基地
+                <span>101</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#hero">主页</a></li>
+                <li><a href="#teachers">指导教师</a></li>
+                <li><a href="#footer">关于</a></li>
+                <li><a href="#" class="cta"><i class="fas fa-calendar-check"></i> 预约参观</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="badge"><i class="fas fa-flask"></i> 南京大学 · 大气科学学院</div>
+                <h1>
+                    大气物理与探测<br />
+                    <span class="highlight">101 数智实践基地</span>
+                </h1>
+                <p class="subhead">
+                    聚焦地球流体力学、大气辐射与遥感、闪电物理等前沿方向，
+                    融合理论、实验与数值模拟，培养数智时代的大气科学创新人才。
+                </p>
+                <div class="hero-info-grid">
+                    <div class="hero-info-item">
+                        <i class="fas fa-map-pin"></i> 仙林校区 · 基础实验楼丙508
+                    </div>
+                    <!-- 已移除邮箱和开放时间，仅保留地点 -->
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="illustration">
+                    <i class="fas fa-atom"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 指导教师 -->
+    <section class="container" id="teachers" style="padding-top: 40px;">
+        <div class="section-heading">
+            <i class="fas fa-chalkboard-teacher"></i> 指导教师
+            <span class="line"></span>
+        </div>
+
+        <div class="teacher-grid">
+            <!-- 傅豪 -->
+            <div class="teacher-card">
+                <div class="avatar-wrap">
+                    <div class="avatar">
+                        <img src="https://ui-avatars.com/api/?name=傅豪&background=0a3d62&color=fff&size=80&font-size=0.5&bold=true" alt="傅豪" />
+                    </div>
+                    <div class="name-wrap">
+                        <a href="https://as.nju.edu.cn/c4/55/c11341a771157/page.htm" class="name">
+                            傅豪 <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <div class="title">准聘副教授 · 国家级青年人才</div>
+                    </div>
+                </div>
+                <span class="role-tag"><i class="fas fa-flask"></i> 地球流体力学实验室</span>
+                <p class="bio">
+                    <strong>研究方向：</strong>大气对流、涡旋与波动理论，统计物理与随机过程，流体实验装置设计。
+                    本科毕业于南京大学，博士毕业于美国斯坦福大学。
+                    曾获伍兹霍尔海洋研究所地球流体力学奖学金、谢义炳青年科技奖。<br />
+                    <strong>办公室：</strong>大气楼C512
+                </p>
+                <ul class="detail-list">
+                    <li>自主研发旋转水槽、波动水槽、层结水槽、对流水槽等系列装置</li>
+                    <li>开发基于涡方法的滞弹性流体模拟动力框架 VDNS</li>
+                </ul>
+                <div class="meta-links">
+                    <a href="https://as.nju.edu.cn/c4/55/c11341a771157/page.htm"><i class="fas fa-external-link-alt"></i> 学院主页</a>
+                    <a href="http://www.njugfd.org/"><i class="fas fa-flask"></i> 实验室主页</a>
+                    <a href="http://www.njugfd.org/VDNSweb/VDNShome.html"><i class="fas fa-code"></i> VDNS</a>
+                </div>
+            </div>
+
+            <!-- 丁家琛 -->
+            <div class="teacher-card">
+                <div class="avatar-wrap">
+                    <div class="avatar">
+                        <img src="https://ui-avatars.com/api/?name=丁家琛&background=0a3d62&color=fff&size=80&font-size=0.5&bold=true" alt="丁家琛" />
+                    </div>
+                    <div class="name-wrap">
+                        <a href="https://as.nju.edu.cn/53/08/c11342a807688/page.htm" class="name">
+                            丁家琛 <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <div class="title">准聘助理教授</div>
+                    </div>
+                </div>
+                <span class="role-tag"><i class="fas fa-satellite"></i> 辐射传输与光散射</span>
+                <p class="bio">
+                    <strong>研究方向：</strong>大气辐射传输、光与电磁散射、大气海洋遥感、行星大气遥感、星际尘埃探测。
+                    本科毕业于南京大学光电信息工程专业，博士毕业于美国得克萨斯农工大学。
+                    曾获国际电磁与光散射会议 Peter C. Waterman 青年科学家奖。<br />
+                    <strong>办公室：</strong>大气楼A504
+                </p>
+                <ul class="detail-list">
+                    <li>推导椭球粒子光学特性解析解，适用粒径扩展30倍以上</li>
+                    <li>研发适用于大气-陆地-海洋耦合系统的矢量辐射传输模型（VRTM）</li>
+                </ul>
+                <div class="meta-links">
+                    <a href="https://as.nju.edu.cn/53/08/c11342a807688/page.htm"><i class="fas fa-external-link-alt"></i> 学院主页</a>
+                    <a href="https://jdingali.github.io/"><i class="fas fa-globe"></i> 个人主页</a>
+                    <a href="/_upload/article/files/93/44/794a61154ea9aa8c56e2eec449a0/76f028af-263c-43a5-add0-5f3fdfe6df4e.pdf"><i class="fas fa-file-pdf"></i> 简历</a>
+                </div>
+            </div>
+
+            <!-- 浦云娇 -->
+            <div class="teacher-card">
+                <div class="avatar-wrap">
+                    <div class="avatar">
+                        <img src="https://ui-avatars.com/api/?name=浦云娇&background=0a3d62&color=fff&size=80&font-size=0.5&bold=true" alt="浦云娇" />
+                    </div>
+                    <div class="name-wrap">
+                        <a href="https://as.nju.edu.cn/bc/13/c11341a834579/page.htm" class="name">
+                            浦云娇 <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <div class="title">准聘副教授 · 博导</div>
+                    </div>
+                </div>
+                <span class="role-tag"><i class="fas fa-bolt"></i> 大气电学实验室</span>
+                <p class="bio">
+                    <strong>研究方向：</strong>大气电学、闪电、高能大气物理、电离层物理、电磁干涉成像。
+                    本科毕业于南京大学大气科学专业，博士毕业于美国杜克大学电子与计算机工程系。
+                    曾获AGU优秀审稿人、国际无线电科学联盟青年科学家奖。<br />
+                    <strong>办公室：</strong>大气楼（待更新）
+                </p>
+                <ul class="detail-list">
+                    <li>2023年国际雷暴飞机观测项目ALOFT地面任务科学家</li>
+                    <li>在杜克大学领导闪电相关观测工作（2018-2025）</li>
+                </ul>
+                <div class="meta-links">
+                    <a href="https://as.nju.edu.cn/bc/13/c11341a834579/page.htm"><i class="fas fa-external-link-alt"></i> 学院主页</a>
+                    <a href="https://scholar.google.com/citations?user=3REHufMAAAAJ&hl=en"><i class="fas fa-graduation-cap"></i> Google Scholar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer" id="footer">
+        <div class="footer-links">
+            <a href="#hero">首页</a>
+            <a href="#teachers">指导教师</a>
+            <a href="https://as.nju.edu.cn" target="_blank">大气科学学院</a>
+            <a href="https://www.nju.edu.cn" target="_blank">南京大学</a>
+        </div>
+        <p>© 2026 南京大学大气科学学院 · 101数智实践基地（基础实验楼丙508）</p>
+        <p style="margin-top: 6px; font-size: 0.75rem; opacity: 0.6;">
+            <i class="fas fa-mouse-pointer"></i> 点击教师姓名直达学院个人主页
+        </p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 10) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
+        });
+    </script>
+</body>
+</html>
